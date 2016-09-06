@@ -38,24 +38,6 @@ def blackjack(player, hand)
   end
 end
 
-=begin
-def evaluate(hand)
-  value = 0
-  hand.each do |card|
-    if ['K', 'Q', 'J'].include?(card[0][0])
-      value += 10
-    elsif card[0][0] == 'A'
-      value += 11
-    else
-      value += card[0][0].to_i
-    end
-  end
-  value
-end
-=end
-
-# The each function is iterating over every element in the array when it should be iterating over only the first element in every array. (The value of the card and not the suit).
-
 def evaluate(hand)  
   value = 0
   numerical_value = hand.map { |card| card[0]}     
@@ -77,37 +59,6 @@ def evaluate(hand)
   value
 end
 
-def dealer_turn
-  while dealer_total < 17
-    dealer_cards << deck.pop
-    p dealer_cards
-    if dealer_total > 21
-      puts "Dealer Busted. You win."
-      exit
-
-    elsif dealer_total == 21
-      puts "Dealer hit blackjack! You lose."
-      exit
-    end
-  end
-end
-
-=begin
-def player_turn
- # while evaluate(player_cards) < 21
-    puts "Do you want to 1)Hit or 2)Stay? "
-    choice = gets.chomp
-    if choice == "1"
-      deal_card(player_cards)
-      p player_cards
-      if evaluate(player_cards) > 21
-        puts "Sorry you busted."
-      end
-    end
-  #end
-end
-=end
-
 player_cards = []
 dealer_cards = []
 
@@ -122,22 +73,24 @@ dealer_cards << deck.pop
 dealer_total = evaluate(dealer_cards)
 player_total = evaluate(player_cards)
 
-p player_cards
-p dealer_cards
+puts "You have #{player_cards[0]} and #{player_cards[1]} for a value of #{player_total}"
+puts "Dealer has #{dealer_cards[0]} and #{dealer_cards[1]} for a value of #{dealer_total}"
 
 blackjack("Player", player_cards)
 blackjack("Dealer", dealer_cards)
 
+
+
 # Player Turn
 choice = 0
 while choice != '2'
-  puts "The value of your hand is #{evaluate(player_cards)}"
-  puts "The value of dealer's hand is #{evaluate(dealer_cards)}"
   puts "Do you want to 1)Hit or 2)Stay? "
   choice = gets.chomp
   if choice == "1"
-    player_cards << deck.pop
-    p player_cards
+    new_card = deck.pop
+    player_cards << new_card
+    player_total = evaluate(player_cards)
+    puts "You are dealt #{new_card} and now have a value of #{player_total}"
     if evaluate(player_cards) > 21
       puts "Sorry you busted."
       exit
@@ -147,21 +100,21 @@ while choice != '2'
     end
   elsif choice == "2"
     puts "You chose to stay."
+  else
+    puts "You need to choose Hit or Stay."
   end
-
-
 end
 
 # Dealer Turn
-  while evaluate(dealer_cards) < 17
-    puts "Dealer has #{evaluate(dealer_cards)}."
+  while evaluate(dealer_cards) < 17 
     puts "Dealer hits."
-    dealer_cards << deck.pop
-    p dealer_cards
+    new_card = deck.pop
+    dealer_cards << new_card
+    dealer_total = evaluate(dealer_cards)
+    puts "Dealer was dealt #{new_card} and has a value of #{dealer_total} "
     if evaluate(dealer_cards) > 21
       puts "Dealer Busted. You win."
       exit
-
     elsif evaluate(dealer_cards) == 21
       puts "Dealer hit blackjack! You lose."
       exit
@@ -170,10 +123,11 @@ end
 
 # Showdown
   if evaluate(player_cards) > evaluate(dealer_cards)
-    puts "you win"
+    puts "Dealer stays"
+    puts "You win"
   elsif evaluate(dealer_cards) > evaluate(player_cards)
-    puts "Dealer has #{evaluate(dealer_cards)}."
-    puts "you lose"
+    puts "Dealer stays"
+    puts "You lose"
   else
     puts "tie"
   end
