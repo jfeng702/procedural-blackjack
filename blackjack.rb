@@ -28,11 +28,9 @@ def deal_card(deck)
   deck.pop
 end
 
-def blackjack(player, hand)
-  if hand[0][0] == 'A'&& ['10', 'J', 'Q', 'K'].include?(hand[1][0])
-    puts "#{player} hits Blackjack!"
-    exit
-  elsif hand[1][0] == 'A' && ['10', 'J', 'Q', 'K'].include?(hand[0][0])
+def blackjack?(player, hand)
+  if hand[0][0] == 'A'&& ['10', 'J', 'Q', 'K'].include?(hand[1][0]) ||
+     hand[1][0] == 'A' && ['10', 'J', 'Q', 'K'].include?(hand[0][0])
     puts "#{player} hits Blackjack!" 
     exit
   end
@@ -51,7 +49,7 @@ def evaluate(hand)
     end
   end
   
-  hand.select {|x| x[0] == 'A'}.count.times do 
+  numerical_value.count('A').times do 
     if value > 21
       value -= 10
     end
@@ -65,10 +63,10 @@ dealer_cards = []
 deck = initialize_deck
 shuffle(deck)
 
-player_cards << deck.pop
-dealer_cards << deck.pop
-player_cards << deck.pop
-dealer_cards << deck.pop
+2.times do
+  player_cards << deck.pop
+  dealer_cards << deck.pop
+end
 
 dealer_total = evaluate(dealer_cards)
 player_total = evaluate(player_cards)
@@ -76,8 +74,8 @@ player_total = evaluate(player_cards)
 puts "You have #{player_cards[0]} and #{player_cards[1]} for a value of #{player_total}"
 puts "Dealer has #{dealer_cards[0]} and #{dealer_cards[1]} for a value of #{dealer_total}"
 
-blackjack("Player", player_cards)
-blackjack("Dealer", dealer_cards)
+blackjack?("Player", player_cards)
+blackjack?("Dealer", dealer_cards)
 
 
 
